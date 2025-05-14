@@ -25,3 +25,5 @@
 - 簡易ログ機能（感想・写真をその場で記録）
 - 同じアーティストの予定を持つユーザーを発見・フォローできる「仲間探し」機能
 　
+### 画面遷移図(figma)
+https://www.figma.com/board/RFdcvNNOXrYzZG57ox4JVS/%E7%94%BB%E9%9D%A2%E9%81%B7%E7%A7%BB_%E3%83%95%E3%82%A7%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%A0%E3%83%86%E3%83%BC%E3%83%96%E3%83%AB?t=H9lLaSRhIspmmuIH-1
