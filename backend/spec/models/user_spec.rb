@@ -16,7 +16,7 @@ RSpec.describe User, type: :model do
     it '名前が空だと無効である' do
       user = User.new(name: '', email: 'test@example.com', password: 'password')
       expect(user).not_to be_valid
-      expect(user.errors[:name]).to include("can't be blank")
+      expect(user.errors[:name]).to include("を入力してください")
     end
 
     it 'メールが空だと無効である' do
