@@ -30,3 +30,37 @@ https://www.figma.com/board/RFdcvNNOXrYzZG57ox4JVS/%E7%94%BB%E9%9D%A2%E9%81%B7%E
 
 ### ER図(dbdiagram.io)
 https://dbdiagram.io/d/68244f815b2fc4582f876380
+
+## MVP用 技術スタック
+
+---
+
+### ■ 開発環境
+- Docker（ローカル/本番の統一）
+- GitHub（ソース管理）
+- GitHub Actions（CI/CD）
+
+---
+
+### ■ バックエンド（API & サーバー）
+- Ruby on Rails 7.0.4.3
+  - Ruby 3.2.2
+  - Rails標準MVC（MVP段階ではAPI分離なし）
+  - 認証: has_secure_password
+- データベース: MySQL（使用経験ベース）
+- ORM: ActiveRecord
+
+---
+
+### ■ フロントエンド（React構成オプションを使用する場合）
+- React.js（使用経験あり）
+- TypeScript（型安全性を活かして開発）
+- Chakra UI（コンポーネントベースでスピーディにUI構築）
+- Vite or Next.js（選択可、MVPではViteでも十分）
+  - MVPでのReact構成を導入する場合、RailsはAPIモードで提供
+
+---
+
+### ■ スタイリング / デザイン
+- Chakra UI（UI構築を効率化）
+- Silicon（Bootstrapテンプレートを使う場合の代替案）
