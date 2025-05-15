@@ -92,6 +92,11 @@ GEM
     diff-lcs (1.6.2)
     drb (2.2.1)
     erubi (1.13.1)
+    factory_bot (6.5.1)
+      activesupport (>= 6.1.0)
+    factory_bot_rails (6.4.4)
+      factory_bot (~> 6.5)
+      railties (>= 5.0.0)
     globalid (1.2.1)
       activesupport (>= 6.1)
     i18n (1.14.7)
@@ -168,6 +173,9 @@ GEM
     rails-html-sanitizer (1.6.2)
       loofah (~> 2.21)
       nokogiri (>= 1.15.7, != 1.16.7, != 1.16.6, != 1.16.5, != 1.16.4, != 1.16.3, != 1.16.2, != 1.16.1, != 1.16.0.rc1, != 1.16.0)
+    rails-i18n (7.0.10)
+      i18n (>= 0.7, < 2)
+      railties (>= 6.0.0, < 8)
     railties (7.1.5.1)
       actionpack (= 7.1.5.1)
       activesupport (= 7.1.5.1)
@@ -216,10 +224,12 @@ PLATFORMS
 DEPENDENCIES
   bcrypt
   bootsnap
+  factory_bot_rails
   mysql2 (~> 0.5)
   puma (>= 5.0)
   rack-cors
   rails (~> 7.1.5, >= 7.1.5.1)
+  rails-i18n
   rspec-rails
   tzinfo-data
 
