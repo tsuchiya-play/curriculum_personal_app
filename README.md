@@ -55,11 +55,10 @@ https://dbdiagram.io/d/68244f815b2fc4582f876380
 ### ■ フロントエンド（React構成オプションを使用する場合）
 - React.js（使用経験あり）
 - TypeScript（型安全性を活かして開発）
-- Chakra UI（コンポーネントベースでスピーディにUI構築）
+- Tailwind CSS
 - MVPでのReact構成を導入する場合、RailsはAPIモードで提供
 
 ---
 
 ### ■ スタイリング / デザイン
-- Chakra UI（UI構築を効率化）
-- Silicon（Bootstrapテンプレートを使う場合の代替案）
+- Tailwind CSS
