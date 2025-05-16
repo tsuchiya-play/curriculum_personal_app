@@ -1,6 +1,7 @@
 FactoryBot.define do
   factory :timetable_item do
     association :timetable
-    memo { "楽しみなライブ！" }
+    association :performance
+    memo { "Don't miss this!" }
   end
 end
