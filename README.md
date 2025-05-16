@@ -56,8 +56,7 @@ https://dbdiagram.io/d/68244f815b2fc4582f876380
 - React.js（使用経験あり）
 - TypeScript（型安全性を活かして開発）
 - Chakra UI（コンポーネントベースでスピーディにUI構築）
-- Vite or Next.js（選択可、MVPではViteでも十分）
-  - MVPでのReact構成を導入する場合、RailsはAPIモードで提供
+- MVPでのReact構成を導入する場合、RailsはAPIモードで提供
 
 ---
 
