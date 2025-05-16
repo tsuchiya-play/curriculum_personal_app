@@ -43,7 +43,7 @@ https://dbdiagram.io/d/68244f815b2fc4582f876380
 ---
 
 ### ■ バックエンド（API & サーバー）
-- Ruby on Rails 7.0.4.3
+- Ruby on Rails 7.1.5
   - Ruby 3.2.2
   - Rails標準MVC（MVP段階ではAPI分離なし）
   - 認証: has_secure_password
