@@ -16,7 +16,7 @@
 - 日付と時間を参照して、時間軸の表示
 - 作成したタイムテーブルの共有
 - ログイン機能/新規登録
- 
+
 ### その後の機能
 - アーティスト情報をSpotify Apple MusicなどのAPIを使って参照
 - PWAによるスマホのホーム画面へ表示
@@ -45,9 +45,9 @@ https://dbdiagram.io/d/68244f815b2fc4582f876380
 ### ■ バックエンド（API & サーバー）
 - Ruby on Rails 7.1.5
   - Ruby 3.2.2
-  - Rails標準MVC（MVP段階ではAPI分離なし）
-  - 認証: has_secure_password
-- データベース: MySQL（使用経験ベース）
+  - Rails API
+  - 認証: has_secure_password + bcrypt
+- データベース: MySQL
 - ORM: ActiveRecord
 
 ---

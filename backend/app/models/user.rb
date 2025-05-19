@@ -9,5 +9,5 @@ class User < ApplicationRecord
                     uniqueness: { case_sensitive: false },
                     length: { maximum: 255 }
 
-  validates :password, presence: true, length: { minimum: 6 }, if: -> { new_record? || !password.nil? }
+  validates :password, presence: true, length: { minimum: 8 }
 end
