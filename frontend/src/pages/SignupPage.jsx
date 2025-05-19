@@ -1,75 +1,67 @@
 "use client"
 
 import { useState } from "react"
-import { ArrowLeft, Mail, Lock, Eye, EyeOff, CheckCircle, AlertCircle } from "lucide-react"
+import { ArrowLeft, Mail, Lock, Eye, EyeOff, CheckCircle, AlertCircle, User } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 
 function SignupPage() {
     const navigate = useNavigate()
+    const [name, setName] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
     const [showPassword, setShowPassword] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
-    const [error, setError] = useState("")
+    const [error, setError] = useState([])
     const [success, setSuccess] = useState(false)
 
-    // バリデーション関数
-    const validateForm = () => {
-        if (!email) {
-            setError("メールアドレスを入力してください")
-            return false
-        }
-
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-        if (!emailRegex.test(email)) {
-            setError("有効なメールアドレスを入力してください")
-            return false
-        }
-
-        if (!password) {
-            setError("パスワードを入力してください")
-            return false
-        }
-
-        if (password.length < 8) {
-            setError("パスワードは8文字以上で入力してください")
-            return false
-        }
-
-        if (password !== confirmPassword) {
-            setError("パスワードが一致しません")
-            return false
-        }
-
-        return true
-    }
-
-    // フォーム送信処理
     const handleSubmit = async (e) => {
-        e.preventDefault()
-        setError("")
+        e.preventDefault();
+        setError("");
+        setSuccess(false);
 
-        if (!validateForm()) {
-            return
+        // 最低限：空欄だけチェック（Railsにリクエストすらしない）
+        if (!email || !password || !confirmPassword) {
+            setError("すべての項目を入力してください");
+            return;
         }
 
-        setIsLoading(true)
+        setIsLoading(true);
 
         try {
-            // Rails APIへのリクエストをシミュレート
-            // 実際の実装では fetch や axios を使用してAPIを呼び出す
-            await new Promise((resolve) => setTimeout(resolve, 1000))
+            const response = await fetch("http://localhost:3000/api/v1/users", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    user: {
+                        name,
+                        email,
+                        password,
+                        password_confirmation: confirmPassword,
+                    },
+                }),
+            });
 
-            // 成功時の処理
-            setSuccess(true)
-            setIsLoading(false)
+            const data = await response.json();
+
+            if (!response.ok) {
+                // Railsのバリデーションエラーを表示（形式によって調整）
+                const errorMessage =
+                    data.errors?.full_messages?.join(",") || data.error || "登録に失敗しました";
+                setError(errorMessage.filter(Boolean));
+                setIsLoading(false);
+                return;
+            }
+
+            setSuccess(true);
+            setIsLoading(false);
         } catch (err) {
-            // エラー処理
-            setError("登録に失敗しました。もう一度お試しください。")
-            setIsLoading(false)
+            setError("通信エラーが発生しました。");
+            setIsLoading(false);
         }
-    }
+    };
 
     return (
         <div
@@ -104,14 +96,39 @@ function SignupPage() {
                     <>
                         <h2 className="text-2xl font-bold mb-6 text-center">新規アカウント作成</h2>
 
-                        {error && (
-                            <div className="mb-6 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-red-700">
-                                <AlertCircle className="h-5 w-5 flex-shrink-0" />
-                                <p className="text-sm">{error}</p>
+                        {error.length > 0 && (
+                            <div className="mb-6 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700">
+                                <div className="flex items-start gap-2">
+                                    <AlertCircle className="h-5 w-5 mt-1 flex-shrink-0" />
+                                    <ul className="text-sm space-y-1">
+                                        {error.map((msg, idx) => (
+                                            <li key={idx}>・{msg}</li>
+                                        ))}
+                                    </ul>
+                                </div>
                             </div>
                         )}
 
                         <form onSubmit={handleSubmit} className="space-y-6">
+                            <div>
+                                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                                    名前
+                                </label>
+                                <div className="relative">
+                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <User className="h-5 w-5 text-gray-400" />
+                                    </div>
+                                    <input
+                                        id="name"
+                                        type="text"
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
+                                        className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                                        placeholder="ユーザー名"
+                                    />
+                                </div>
+                            </div>
+
                             <div>
                                 <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                                     メールアドレス
