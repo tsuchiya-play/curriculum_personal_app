@@ -1,6 +1,11 @@
+"use client"
+
 import { Calendar, PlusCircle, AlertCircle } from "lucide-react"
+import { useNavigate } from "react-router-dom"
 
 function TopPage({ isLoggedIn }) {
+    const navigate = useNavigate()
+
     return (
         <div className="p-6 flex flex-col items-center justify-center" style={{ minHeight: "calc(800px - 64px)" }}>
             <div className="text-center mb-12">
@@ -12,13 +17,19 @@ function TopPage({ isLoggedIn }) {
             </div>
 
             <div className="w-full space-y-6">
-                <button className="w-full bg-purple-600 hover:bg-purple-700 text-white py-4 px-6 rounded-lg flex items-center justify-center gap-2 shadow-md transition-colors">
+                <button
+                    onClick={() => navigate("/festivals")}
+                    className="w-full bg-purple-600 hover:bg-purple-700 text-white py-4 px-6 rounded-lg flex items-center justify-center gap-2 shadow-md transition-colors"
+                >
                     <Calendar className="h-5 w-5" />
                     <span className="font-medium">フェス一覧を見る</span>
                 </button>
 
                 {isLoggedIn ? (
-                    <button className="w-full bg-green-600 hover:bg-green-700 text-white py-4 px-6 rounded-lg flex items-center justify-center gap-2 shadow-md transition-colors">
+                    <button
+                        onClick={() => navigate("/create-festival")}
+                        className="w-full bg-green-600 hover:bg-green-700 text-white py-4 px-6 rounded-lg flex items-center justify-center gap-2 shadow-md transition-colors"
+                    >
                         <PlusCircle className="h-5 w-5" />
                         <span className="font-medium">フェスを作成する</span>
                     </button>
@@ -28,16 +39,24 @@ function TopPage({ isLoggedIn }) {
                             <PlusCircle className="h-5 w-5" />
                             <span className="font-medium">フェスを作成する</span>
                         </button>
-                        <div className="flex items-center justify-center text-sm text-gray-600 gap-1">
-                            <AlertCircle className="h-4 w-4 text-amber-500" />
-                            <span>フェスを作成するにはログインが必要です</span>
+                        <div className="flex flex-col items-center justify-center text-sm text-gray-600 gap-1">
+                            <div className="flex items-center">
+                                <AlertCircle className="h-4 w-4 text-amber-500 mr-1" />
+                                <span>フェスを作成するにはログインが必要です</span>
+                            </div>
+                            <button
+                                onClick={() => navigate("/login")}
+                                className="mt-2 text-purple-600 hover:text-purple-800 font-medium"
+                            >
+                                ログインはこちら
+                            </button>
                         </div>
                     </div>
                 )}
             </div>
 
             <div className="mt-12 text-center text-gray-500 text-sm">
-                <p>© 2023 フェスタイム All Rights Reserved.</p>
+                <p>© 2025 フェスタイム All Rights Reserved.</p>
             </div>
         </div>
     )
