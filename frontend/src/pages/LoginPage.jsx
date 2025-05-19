@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { ArrowLeft, Mail, Lock, Eye, EyeOff, AlertCircle } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 
@@ -11,48 +11,56 @@ function LoginPage({ onLogin }) {
     const [showPassword, setShowPassword] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState("")
+    const [csrfToken, setCsrfToken] = useState("")
 
-    // バリデーション関数
-    const validateForm = () => {
-        if (!email) {
-            setError("メールアドレスを入力してください")
-            return false
+    useEffect(() => {
+        const fetchCsrfToken = async () => {
+            const response = await fetch("http://localhost:3000/api/v1/csrf_token", {
+                credentials: "include",
+            })
+            const data = await response.json()
+            setCsrfToken(data.csrf_token)
         }
 
-        if (!password) {
-            setError("パスワードを入力してください")
-            return false
-        }
+        fetchCsrfToken()
+    }, [])
 
-        return true
-    }
-
-    // フォーム送信処理
     const handleSubmit = async (e) => {
         e.preventDefault()
-        setError("")
-
-        if (!validateForm()) {
-            return
-        }
-
+        setError("") // 初期化
         setIsLoading(true)
 
         try {
-            // Rails APIへのリクエストをシミュレート
-            // 実際の実装では fetch や axios を使用してAPIを呼び出す
-            await new Promise((resolve) => setTimeout(resolve, 1000))
+            const response = await fetch("http://localhost:3000/api/v1/sessions", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-Token": csrfToken,
+                },
+                credentials: "include",
+                body: JSON.stringify({ email, password }),
+            })
 
-            // 成功時の処理
+            const data = await response.json()
+
+            if (!response.ok) {
+                // エラーを配列で受け取り表示
+                const messages = data.errors || data.error || ["ログインに失敗しました"]
+                setError(Array.isArray(messages) ? messages : [messages])
+                setIsLoading(false)
+                return
+            }
+
+            // 成功時
             setIsLoading(false)
-            onLogin() // ログイン状態を更新
-            navigate("/") // ホームページにリダイレクト
+            onLogin(data.user)
+            navigate("/")
         } catch (err) {
-            // エラー処理
-            setError("ログインに失敗しました。メールアドレスとパスワードを確認してください。")
+            setError(["サーバーに接続できませんでした。"])
             setIsLoading(false)
         }
     }
+
 
     return (
         <div

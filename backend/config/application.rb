@@ -18,6 +18,6 @@ module App
 
     config.i18n.default_locale = :ja
     config.i18n.available_locales = [:ja, :en]
-    config.api_only = true
+    config.api_only = false
   end
 end

@@ -3,11 +3,16 @@
 import { Calendar, PlusCircle, AlertCircle } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 
-function TopPage({ isLoggedIn }) {
+function TopPage({ isLoggedIn, message }) {
     const navigate = useNavigate()
 
     return (
         <div className="p-6 flex flex-col items-center justify-center" style={{ minHeight: "calc(800px - 64px)" }}>
+            {message && (
+                <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg text-green-700">
+                    {message}
+                </div>
+            )}
             <div className="text-center mb-12">
                 <h1 className="text-3xl font-bold mb-4 text-purple-800">フェスタイム</h1>
                 <p className="text-gray-600 mb-6">

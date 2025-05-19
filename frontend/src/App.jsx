@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"
 import Layout from "./components/Layout"
 import TopPage from "./pages/TopPage"
@@ -9,16 +9,33 @@ import SignupPage from "./pages/SignupPage"
 import "./App.css"
 
 function App() {
-  // ログイン状態を管理（実際の実装ではAPIやコンテキストから取得）
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [user, setUser] = useState(null)
+  const [loginMessage, setLoginMessage] = useState("")
+  const isLoggedIn = !!user
 
-  // ログイン/ログアウトの切り替え（デモ用）
-  const handleLogin = () => {
-    setIsLoggedIn(true)
+  useEffect(() => {
+    const fetchUser = async () => {
+      const response = await fetch("http://localhost:3000/api/v1/me", {
+        credentials: "include", // Cookieを送信するために必須
+      })
+      if (response.ok) {
+        const data = await response.json()
+        setUser(data.user)  // ログイン済みユーザー情報をセット
+      } else {
+        setUser(null)  // 未ログイン
+      }
+    }
+    fetchUser()
+  }, [])
+
+  // ログイン/ログアウトの切り替え
+  const handleLogin = (userData) => {
+    setUser(userData)
+    setLoginMessage("ログインに成功しました！")
   }
 
   const handleLogout = () => {
-    setIsLoggedIn(false)
+    setUser(null)
   }
 
   return (
@@ -32,7 +49,7 @@ function App() {
             path="/"
             element={
               <Layout isLoggedIn={isLoggedIn} onLogout={handleLogout}>
-                <TopPage isLoggedIn={isLoggedIn} />
+                <TopPage isLoggedIn={isLoggedIn} message={loginMessage} />
               </Layout>
             }
           />
