@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"
+import { getCsrfTokenFromCookie } from "./utils/csrf"
 import Layout from "./components/Layout"
 import TopPage from "./pages/TopPage"
 import LoginPage from "./pages/LoginPage"
@@ -34,8 +35,25 @@ function App() {
     setLoginMessage("ログインに成功しました！")
   }
 
-  const handleLogout = () => {
-    setUser(null)
+  const handleLogout = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/v1/session", {
+        method: "DELETE",
+        credentials: "include",
+        headers: {
+          "X-CSRF-Token": getCsrfTokenFromCookie(),
+        },
+      })
+
+      if (response.ok) {
+        setUser(null)
+        setLoginMessage("ログアウトしました。")
+      } else {
+        console.error("ログアウト失敗")
+      }
+    } catch (error) {
+      console.error("通信エラー", error)
+    }
   }
 
   return (

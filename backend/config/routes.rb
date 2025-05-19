@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :users, only: [:create]
-      resources :sessions, only: [:create, :destroy]
+      resource :session, only: [:create, :destroy]
 
       get :csrf_token, to: "csrf#index"
       get :me, to: "auth#me"

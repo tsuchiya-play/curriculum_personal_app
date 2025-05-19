@@ -21,8 +21,12 @@ class Api::V1::SessionsController < ApplicationController
   end
 
   def destroy
-    reset_session
-    render json: { message: 'ログアウトしました' }, status: :ok
+    if @current_user
+      reset_session
+      render json: { message: "ログアウトしました" }, status: :ok
+    else
+      render json: { error: "ログインしていません" }, status: :unauthorized
+    end
   end
 
   private
