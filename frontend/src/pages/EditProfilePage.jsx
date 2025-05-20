@@ -19,26 +19,20 @@ function EditProfilePage() {
     const [error, setError] = useState("")
     const [passwordError, setPasswordError] = useState("")
 
-    // ユーザーデータの取得（モック）
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                // モックデータ
-                const mockUserData = {
-                    id: 1,
-                    name: "山田 太郎",
-                    email: "yamada@example.com",
-                }
+                const response = await fetch("http://localhost:3000/api/v1/me", {
+                    credentials: "include",
+                })
+                if (!response.ok) throw new Error("ユーザー情報の取得に失敗")
 
-                // APIリクエストをシミュレート
-                await new Promise((resolve) => setTimeout(resolve, 800))
-
-                setName(mockUserData.name)
-                setEmail(mockUserData.email)
-                setIsLoading(false)
+                const data = await response.json()
+                setName(data.user.name)
+                setEmail(data.user.email)
             } catch (error) {
                 console.error("ユーザーデータの取得に失敗しました", error)
-                setError("ユーザーデータの取得に失敗しました")
+            } finally {
                 setIsLoading(false)
             }
         }
@@ -50,37 +44,34 @@ function EditProfilePage() {
     const handleProfileSubmit = async (e) => {
         e.preventDefault()
         setError("")
-
-        if (!name.trim()) {
-            setError("名前を入力してください")
-            return
-        }
-
-        if (!email.trim()) {
-            setError("メールアドレスを入力してください")
-            return
-        }
-
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-        if (!emailRegex.test(email)) {
-            setError("有効なメールアドレスを入力してください")
-            return
-        }
-
         setIsSaving(true)
 
         try {
-            // 実際の実装ではAPIリクエストを送信
-            await new Promise((resolve) => setTimeout(resolve, 800))
+            const response = await fetch(`http://localhost:3000/api/v1/update_profile`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: "include",  // cookieベースの認証を保持
+                body: JSON.stringify({
+                    user: {
+                        name,
+                        email,
+                    }
+                })
+            })
 
-            // 更新成功後、マイページへ戻る
-            setIsSaving(false)
+            if (!response.ok) {
+                const data = await response.json()
+                throw new Error(data.error || "プロフィールの更新に失敗しました")
+            }
+
             navigate("/my-page")
-            // 成功メッセージを表示（実際の実装ではトースト等で通知）
             alert("プロフィールが更新されました")
         } catch (error) {
             console.error("プロフィールの更新に失敗しました", error)
-            setError("プロフィールの更新に失敗しました。もう一度お試しください。")
+            setError(error.message || "プロフィールの更新に失敗しました。もう一度お試しください。")
+        } finally {
             setIsSaving(false)
         }
     }
@@ -89,48 +80,41 @@ function EditProfilePage() {
     const handlePasswordSubmit = async (e) => {
         e.preventDefault()
         setPasswordError("")
-
-        // パスワード変更のバリデーション
-        if (!currentPassword) {
-            setPasswordError("現在のパスワードを入力してください")
-            return
-        }
-
-        if (!newPassword) {
-            setPasswordError("新しいパスワードを入力してください")
-            return
-        }
-
-        if (newPassword.length < 8) {
-            setPasswordError("パスワードは8文字以上で入力してください")
-            return
-        }
-
-        if (newPassword !== confirmPassword) {
-            setPasswordError("新しいパスワードと確認用パスワードが一致しません")
-            return
-        }
-
         setIsSaving(true)
 
         try {
-            // 実際の実装ではAPIリクエストを送信
-            await new Promise((resolve) => setTimeout(resolve, 800))
+            const response = await fetch("http://localhost:3000/api/v1/password", {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                credentials: "include", // cookie認証があれば含める
+                body: JSON.stringify({
+                    current_password: currentPassword,
+                    new_password: newPassword,
+                    new_password_confirmation: confirmPassword,
+                }),
+            })
 
-            // パスワード変更成功
-            setIsSaving(false)
+            if (!response.ok) {
+                const data = await response.json()
+                throw new Error(data.error || "パスワードの変更に失敗しました。")
+            }
+
+            // パスワード変更成功時
             setCurrentPassword("")
             setNewPassword("")
             setConfirmPassword("")
             setIsChangingPassword(false)
-            // 成功メッセージを表示（実際の実装ではトースト等で通知）
             alert("パスワードが変更されました")
         } catch (error) {
             console.error("パスワードの変更に失敗しました", error)
-            setPasswordError("パスワードの変更に失敗しました。現在のパスワードが正しいか確認してください。")
+            setPasswordError(error.message || "パスワードの変更に失敗しました。現在のパスワードが正しいか確認してください。")
+        } finally {
             setIsSaving(false)
         }
     }
+
 
     if (isLoading) {
         return (
