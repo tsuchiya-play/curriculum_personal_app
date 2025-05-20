@@ -10,6 +10,7 @@ import SignupPage from "./pages/SignupPage"
 import MyPage from "./pages/MyPage"
 import EditProfilePage from "./pages/EditProfilePage"
 import FestivalListPage from "./pages/FestivalListPage"
+import CreateFestivalPage from "./pages/CreateFestivalPage"
 import "./App.css"
 
 function App() {
@@ -79,10 +80,7 @@ function App() {
           <Route path="/my-page" element={isLoggedIn ? <MyPage onLogout={handleLogout} setUser={setUser} setLoginMessage={setLoginMessage} /> : <Navigate to="/login" />} />
           <Route path="/edit-profile" element={isLoggedIn ? <EditProfilePage /> : <Navigate to="/login" />} />
           <Route path="/festivals" element={<FestivalListPage isLoggedIn={isLoggedIn} />} />
-          <Route
-            path="/create-festival"
-            element={isLoggedIn ? <div>フェス作成ページ（実装予定）</div> : <Navigate to="/login" />}
-          />
+          <Route path="/create-festival" element={isLoggedIn ? <CreateFestivalPage /> : <Navigate to="/login" />} />
           {/* 404ページ */}
           <Route path="*" element={<div>ページが見つかりません</div>} />
         </Routes>
