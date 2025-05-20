@@ -13,10 +13,9 @@ function CreateFestivalPage() {
         description: "",
         officialUrl: "",
     })
-    const [errors, setErrors] = useState({})
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [isSuccess, setIsSuccess] = useState(false)
-    const [submitError, setSubmitError] = useState("")
+    const [submitError, setSubmitError] = useState([])
 
     // 入力値の変更を処理
     const handleChange = (e) => {
@@ -25,26 +24,42 @@ function CreateFestivalPage() {
             ...prev,
             [name]: value,
         }))
-
-        // エラーをクリア
-        if (errors[name]) {
-            setErrors((prev) => ({
-                ...prev,
-                [name]: "",
-            }))
-        }
     }
 
     // フォーム送信
     const handleSubmit = async (e) => {
         e.preventDefault()
-        setSubmitError("")
+        setSubmitError([])
 
         setIsSubmitting(true)
 
         try {
-            // APIリクエストをシミュレート
-            await new Promise((resolve) => setTimeout(resolve, 1000))
+            // 実際の実装では以下のようなAPIリクエストを行う
+            const response = await fetch("http://localhost:3000/api/v1/festivals", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    festival: {
+                        name: formData.name,
+                        start_date: formData.startDate,
+                        end_date: formData.endDate,
+                        description: formData.description,
+                        official_url: formData.officialUrl,
+                    },
+                }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                const errorMessages =
+                    data.errors?.full_messages?.join(",") || data.error || "フェスの作成に失敗しました。";
+                setSubmitError(Array.isArray(errorMessages) ? errorMessages : [errorMessages]);
+                setIsSubmitting(false);
+                return;
+            }
 
             // 成功時の処理
             setIsSuccess(true)
@@ -55,8 +70,7 @@ function CreateFestivalPage() {
                 navigate("/festivals")
             }, 3000)
         } catch (error) {
-            console.error("フェスの作成に失敗しました", error)
-            setSubmitError("フェスの作成に失敗しました。もう一度お試しください。")
+            setSubmitError(["通信エラーが発生しました。"])
             setIsSubmitting(false)
         }
     }
@@ -65,7 +79,7 @@ function CreateFestivalPage() {
         <div className="min-h-screen bg-gray-50 flex flex-col">
             {/* ヘッダー */}
             <header className="bg-purple-700 text-white p-4 flex items-center">
-                <button onClick={() => navigate("/festivals")} className="mr-2 p-1 rounded-full hover:bg-purple-600">
+                <button onClick={() => navigate("/")} className="mr-2 p-1 rounded-full hover:bg-purple-600">
                     <ArrowLeft size={20} />
                 </button>
                 <h1 className="text-lg font-semibold">フェスを作成</h1>
@@ -85,10 +99,17 @@ function CreateFestivalPage() {
                     <>
                         <h2 className="text-xl font-bold mb-6 text-center text-purple-800">新しいフェスを作成</h2>
 
-                        {submitError && (
-                            <div className="mb-6 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-red-700">
-                                <AlertCircle className="h-5 w-5 flex-shrink-0" />
-                                <p className="text-sm">{submitError}</p>
+                        {submitError.length > 0 && (
+                            <div className="mb-6 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <AlertCircle className="h-5 w-5 flex-shrink-0" />
+                                    <p className="text-sm font-semibold">入力内容に問題があります:</p>
+                                </div>
+                                <ul className="list-disc list-inside text-sm space-y-1 pl-1">
+                                    {submitError.map((msg, idx) => (
+                                        <li key={idx}>{msg}</li>
+                                    ))}
+                                </ul>
                             </div>
                         )}
 
@@ -108,12 +129,10 @@ function CreateFestivalPage() {
                                         type="text"
                                         value={formData.name}
                                         onChange={handleChange}
-                                        className={`block w-full pl-10 pr-3 py-3 border ${errors.name ? "border-red-300" : "border-gray-300"
-                                            } rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500`}
+                                        className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
                                         placeholder="例: マイフェス 2025"
                                     />
                                 </div>
-                                {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
                             </div>
 
                             {/* 開始日と終了日 */}
@@ -132,11 +151,9 @@ function CreateFestivalPage() {
                                             type="date"
                                             value={formData.startDate}
                                             onChange={handleChange}
-                                            className={`block w-full pl-10 pr-3 py-3 border ${errors.startDate ? "border-red-300" : "border-gray-300"
-                                                } rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500`}
+                                            className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
                                         />
                                     </div>
-                                    {errors.startDate && <p className="mt-1 text-sm text-red-600">{errors.startDate}</p>}
                                 </div>
 
                                 <div>
@@ -153,11 +170,9 @@ function CreateFestivalPage() {
                                             type="date"
                                             value={formData.endDate}
                                             onChange={handleChange}
-                                            className={`block w-full pl-10 pr-3 py-3 border ${errors.endDate ? "border-red-300" : "border-gray-300"
-                                                } rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500`}
+                                            className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
                                         />
                                     </div>
-                                    {errors.endDate && <p className="mt-1 text-sm text-red-600">{errors.endDate}</p>}
                                 </div>
                             </div>
 
@@ -176,12 +191,10 @@ function CreateFestivalPage() {
                                         rows="4"
                                         value={formData.description}
                                         onChange={handleChange}
-                                        className={`block w-full pl-10 pr-3 py-3 border ${errors.description ? "border-red-300" : "border-gray-300"
-                                            } rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500`}
+                                        className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
                                         placeholder="フェスの概要や特徴を入力してください"
                                     ></textarea>
                                 </div>
-                                {errors.description && <p className="mt-1 text-sm text-red-600">{errors.description}</p>}
                             </div>
 
                             {/* 公式URL（任意） */}
@@ -199,12 +212,10 @@ function CreateFestivalPage() {
                                         type="url"
                                         value={formData.officialUrl}
                                         onChange={handleChange}
-                                        className={`block w-full pl-10 pr-3 py-3 border ${errors.officialUrl ? "border-red-300" : "border-gray-300"
-                                            } rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500`}
+                                        className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
                                         placeholder="https://example.com"
                                     />
                                 </div>
-                                {errors.officialUrl && <p className="mt-1 text-sm text-red-600">{errors.officialUrl}</p>}
                             </div>
 
                             {/* 送信ボタン */}

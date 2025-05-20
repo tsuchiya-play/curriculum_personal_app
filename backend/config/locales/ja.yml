@@ -3,9 +3,22 @@ ja:
     attributes:
       user:
         password_confirmation: パスワード確認
+      festival:
+        name: フェス名
+        start_date: 開始日
+        end_date: 終了日
+        description: 概要
+        official_url: 公式URL
     errors:
       models:
         user:
           attributes:
             password_confirmation:
               confirmation: "とパスワードが一致しません"
+      messages:
+        blank: "を入力してください"
+        invalid: "が正しくありません"
+        taken: "は既に存在します"
+        too_short: "は%{count}文字以上で入力してください"
+        too_long: "は%{count}文字以内で入力してください"
+        before: "は%{date}より前の日付にしてください"
