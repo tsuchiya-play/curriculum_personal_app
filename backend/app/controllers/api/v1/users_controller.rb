@@ -36,6 +36,18 @@ class Api::V1::UsersController < ApplicationController
     end
   end
 
+  def destroy
+    user = @current_user
+    if user.destroy
+      # セッションをリセットなどログアウト処理をここで行う場合も
+      reset_session if respond_to?(:reset_session)
+
+      render json: { message: "アカウントを削除しました" }, status: :ok
+    else
+      render json: { error: "アカウントの削除に失敗しました" }, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def user_params

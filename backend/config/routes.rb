@@ -6,6 +6,7 @@ Rails.application.routes.draw do
       resources :users, only: [:create]
       patch :update_profile, to: 'users#update_profile'
       patch :password, to: 'users#update_password'
+      delete :delete_profile, to: 'users#destroy'
 
       resource :session, only: [:create, :destroy]
 
