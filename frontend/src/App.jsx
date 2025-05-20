@@ -76,13 +76,12 @@ function App() {
           <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
           <Route path="/signup" element={<SignupPage />} />
           {/* 保護されたルート（ログイン必須） */}
-          <Route path="/my-page" element={isLoggedIn ? <MyPage onLogout={handleLogout} /> : <Navigate to="/login" />} />
+          <Route path="/my-page" element={isLoggedIn ? <MyPage onLogout={handleLogout} setUser={setUser} setLoginMessage={setLoginMessage} /> : <Navigate to="/login" />} />
           <Route path="/edit-profile" element={isLoggedIn ? <EditProfilePage /> : <Navigate to="/login" />} />
           <Route
             path="/create-festival"
             element={isLoggedIn ? <div>フェス作成ページ（実装予定）</div> : <Navigate to="/login" />}
           />
-          <Route path="/my-page" element={isLoggedIn ? <div>マイページ（実装予定）</div> : <Navigate to="/login" />} />
           {/* 404ページ */}
           <Route path="*" element={<div>ページが見つかりません</div>} />
         </Routes>

@@ -169,7 +169,7 @@ function EditProfilePage() {
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
                                     className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
-                                    placeholder="山田 太郎"
+                                    placeholder="ユーザー名"
                                 />
                             </div>
                         </div>

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { User, Edit, Trash2, LogOut } from "lucide-react"
 
-function MyPage({ onLogout }) {
+function MyPage({ onLogout, setUser, setLoginMessage}) {
     const navigate = useNavigate()
     const [userData, setUserData] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
@@ -43,20 +43,31 @@ function MyPage({ onLogout }) {
     // アカウント削除処理
     const handleDeleteConfirm = async () => {
         try {
-            // 実際の実装ではAPIリクエストを送信
-            await new Promise((resolve) => setTimeout(resolve, 800))
+            const response = await fetch("http://localhost:3000/api/v1/delete_profile", {
+                method: "DELETE",
+                credentials: "include",  // cookieなどの認証情報を送る場合
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
 
-            // 削除成功後、ログアウトしてトップページへ
-            onLogout()
-            navigate("/")
-            // 成功メッセージを表示（実際の実装ではトースト等で通知）
+            if (!response.ok) {
+                const data = await response.json()
+                throw new Error(data.error || "アカウント削除に失敗しました")
+            }
+
+            // 削除成功後にログアウト処理とトップページへ遷移
+            setUser(null)
+            setLoginMessage("")
             alert("アカウントが削除されました")
+            setTimeout(() => navigate("/"), 100)
         } catch (error) {
             console.error("アカウントの削除に失敗しました", error)
+            alert(error.message)
+        } finally {
             setShowDeleteConfirm(false)
         }
     }
-
     if (isLoading) {
         return (
             <div className="min-h-screen bg-gray-50 flex flex-col">
