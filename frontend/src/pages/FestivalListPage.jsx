@@ -12,53 +12,22 @@ function FestivalListPage({ isLoggedIn }) {
     const [error, setError] = useState(null)
     const [searchTerm, setSearchTerm] = useState("")
 
-    // フェスデータの取得（モック）
     useEffect(() => {
         const fetchFestivals = async () => {
             try {
-                // APIリクエストをシミュレート
-                await new Promise((resolve) => setTimeout(resolve, 800))
+                const response = await fetch("http://localhost:3000/api/v1/festivals", {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                })
 
-                // モックデータ
-                const mockFestivals = [
-                    {
-                        id: 1,
-                        name: "ROCK IN JAPAN FESTIVAL 2023",
-                        startDate: "2023-08-05",
-                        endDate: "2023-08-12",
-                        createdBy: "音楽好きの太郎",
-                    },
-                    {
-                        id: 2,
-                        name: "SUMMER SONIC 2023",
-                        startDate: "2023-08-19",
-                        endDate: "2023-08-20",
-                        createdBy: "フェス大好き花子",
-                    },
-                    {
-                        id: 3,
-                        name: "FUJI ROCK FESTIVAL 2023",
-                        startDate: "2023-07-28",
-                        endDate: "2023-07-30",
-                        createdBy: "ロック好きジョン",
-                    },
-                    {
-                        id: 4,
-                        name: "COUNTDOWN JAPAN 23/24",
-                        startDate: "2023-12-28",
-                        endDate: "2023-12-31",
-                        createdBy: "年越しフェス実行委員会",
-                    },
-                    {
-                        id: 5,
-                        name: "RISING SUN ROCK FESTIVAL 2023",
-                        startDate: "2023-08-11",
-                        endDate: "2023-08-12",
-                        createdBy: "北の大地のロッカー",
-                    },
-                ]
+                if (!response.ok) {
+                    throw new Error("フェスデータの取得に失敗しました")
+                }
 
-                setFestivals(mockFestivals)
+                const data = await response.json()
+                setFestivals(data.festivals || data) // APIの形式に応じて適宜調整
                 setIsLoading(false)
             } catch (err) {
                 console.error("フェスデータの取得に失敗しました", err)
@@ -159,7 +128,7 @@ function FestivalListPage({ isLoggedIn }) {
 
                                         <div className="flex items-center gap-2">
                                             <Clock className="h-4 w-4 text-gray-500" />
-                                            <span>{formatDateRange(festival.startDate, festival.endDate)}</span>
+                                            <span>{formatDateRange(festival.start_date, festival.end_date)}</span>
                                         </div>
                                     </div>
                                 </div>
