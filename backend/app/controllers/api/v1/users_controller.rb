@@ -12,11 +12,27 @@ class Api::V1::UsersController < ApplicationController
 
   # PATCH /api/v1/users/:id
   def update_profile
-    current_user = @current_user
-    if current_user.update(user_params)
+    user = @current_user
+    if user.update(user_params)
       render json: { message: 'プロフィールが更新されました' }, status: :ok
     else
-      render json: { error: current_user.errors.full_messages }, status: :unprocessable_entity
+      render json: { error: user.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
+  def update_password
+    user = @current_user
+
+    # 現在のパスワード確認
+    unless user.authenticate(params[:current_password])
+      return render json: { error: "現在のパスワードが正しくありません" }, status: :unauthorized
+    end
+
+    # パスワード更新
+    if user.update(password: params[:new_password], password_confirmation: params[:new_password_confirmation])
+      render json: { message: "パスワードが更新されました" }, status: :ok
+    else
+      render json: { error: user.errors.full_messages }, status: :unprocessable_entity
     end
   end
 

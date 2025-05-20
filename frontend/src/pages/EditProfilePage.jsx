@@ -80,27 +80,41 @@ function EditProfilePage() {
     const handlePasswordSubmit = async (e) => {
         e.preventDefault()
         setPasswordError("")
-
         setIsSaving(true)
 
         try {
-            // 実際の実装ではAPIリクエストを送信
-            await new Promise((resolve) => setTimeout(resolve, 800))
+            const response = await fetch("http://localhost:3000/api/v1/password", {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                credentials: "include", // cookie認証があれば含める
+                body: JSON.stringify({
+                    current_password: currentPassword,
+                    new_password: newPassword,
+                    new_password_confirmation: confirmPassword,
+                }),
+            })
 
-            // パスワード変更成功
-            setIsSaving(false)
+            if (!response.ok) {
+                const data = await response.json()
+                throw new Error(data.error || "パスワードの変更に失敗しました。")
+            }
+
+            // パスワード変更成功時
             setCurrentPassword("")
             setNewPassword("")
             setConfirmPassword("")
             setIsChangingPassword(false)
-            // 成功メッセージを表示（実際の実装ではトースト等で通知）
             alert("パスワードが変更されました")
         } catch (error) {
             console.error("パスワードの変更に失敗しました", error)
-            setPasswordError("パスワードの変更に失敗しました。現在のパスワードが正しいか確認してください。")
+            setPasswordError(error.message || "パスワードの変更に失敗しました。現在のパスワードが正しいか確認してください。")
+        } finally {
             setIsSaving(false)
         }
     }
+
 
     if (isLoading) {
         return (
