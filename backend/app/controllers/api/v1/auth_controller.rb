@@ -1,7 +1,7 @@
 class Api::V1::AuthController < ApplicationController
   def me
     if @current_user
-      render json: { user: { id: @current_user.id, email: @current_user.email } }
+      render json: { user: { id: @current_user.id, name: @current_user.name, email: @current_user.email} }
     else
       render json: { error: "未ログイン" }, status: :unauthorized
     end

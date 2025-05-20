@@ -7,6 +7,8 @@ import Layout from "./components/Layout"
 import TopPage from "./pages/TopPage"
 import LoginPage from "./pages/LoginPage"
 import SignupPage from "./pages/SignupPage"
+import MyPage from "./pages/MyPage"
+import EditProfilePage from "./pages/EditProfilePage"
 import "./App.css"
 
 function App() {
@@ -74,6 +76,8 @@ function App() {
           <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
           <Route path="/signup" element={<SignupPage />} />
           {/* 保護されたルート（ログイン必須） */}
+          <Route path="/my-page" element={isLoggedIn ? <MyPage onLogout={handleLogout} /> : <Navigate to="/login" />} />
+          <Route path="/edit-profile" element={isLoggedIn ? <EditProfilePage /> : <Navigate to="/login" />} />
           <Route
             path="/create-festival"
             element={isLoggedIn ? <div>フェス作成ページ（実装予定）</div> : <Navigate to="/login" />}
