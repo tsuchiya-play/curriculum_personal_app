@@ -47,17 +47,31 @@ function EditProfilePage() {
         setIsSaving(true)
 
         try {
-            // 実際の実装ではAPIリクエストを送信
-            await new Promise((resolve) => setTimeout(resolve, 800))
+            const response = await fetch(`http://localhost:3000/api/v1/update_profile`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: "include",  // cookieベースの認証を保持
+                body: JSON.stringify({
+                    user: {
+                        name,
+                        email,
+                    }
+                })
+            })
 
-            // 更新成功後、マイページへ戻る
-            setIsSaving(false)
+            if (!response.ok) {
+                const data = await response.json()
+                throw new Error(data.error || "プロフィールの更新に失敗しました")
+            }
+
             navigate("/my-page")
-            // 成功メッセージを表示（実際の実装ではトースト等で通知）
             alert("プロフィールが更新されました")
         } catch (error) {
             console.error("プロフィールの更新に失敗しました", error)
-            setError("プロフィールの更新に失敗しました。もう一度お試しください。")
+            setError(error.message || "プロフィールの更新に失敗しました。もう一度お試しください。")
+        } finally {
             setIsSaving(false)
         }
     }
