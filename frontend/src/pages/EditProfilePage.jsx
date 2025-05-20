@@ -19,26 +19,20 @@ function EditProfilePage() {
     const [error, setError] = useState("")
     const [passwordError, setPasswordError] = useState("")
 
-    // ユーザーデータの取得（モック）
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                // モックデータ
-                const mockUserData = {
-                    id: 1,
-                    name: "山田 太郎",
-                    email: "yamada@example.com",
-                }
+                const response = await fetch("http://localhost:3000/api/v1/me", {
+                    credentials: "include",
+                })
+                if (!response.ok) throw new Error("ユーザー情報の取得に失敗")
 
-                // APIリクエストをシミュレート
-                await new Promise((resolve) => setTimeout(resolve, 800))
-
-                setName(mockUserData.name)
-                setEmail(mockUserData.email)
-                setIsLoading(false)
+                const data = await response.json()
+                setName(data.user.name)
+                setEmail(data.user.email)
             } catch (error) {
                 console.error("ユーザーデータの取得に失敗しました", error)
-                setError("ユーザーデータの取得に失敗しました")
+            } finally {
                 setIsLoading(false)
             }
         }
@@ -50,23 +44,6 @@ function EditProfilePage() {
     const handleProfileSubmit = async (e) => {
         e.preventDefault()
         setError("")
-
-        if (!name.trim()) {
-            setError("名前を入力してください")
-            return
-        }
-
-        if (!email.trim()) {
-            setError("メールアドレスを入力してください")
-            return
-        }
-
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-        if (!emailRegex.test(email)) {
-            setError("有効なメールアドレスを入力してください")
-            return
-        }
-
         setIsSaving(true)
 
         try {
@@ -89,27 +66,6 @@ function EditProfilePage() {
     const handlePasswordSubmit = async (e) => {
         e.preventDefault()
         setPasswordError("")
-
-        // パスワード変更のバリデーション
-        if (!currentPassword) {
-            setPasswordError("現在のパスワードを入力してください")
-            return
-        }
-
-        if (!newPassword) {
-            setPasswordError("新しいパスワードを入力してください")
-            return
-        }
-
-        if (newPassword.length < 8) {
-            setPasswordError("パスワードは8文字以上で入力してください")
-            return
-        }
-
-        if (newPassword !== confirmPassword) {
-            setPasswordError("新しいパスワードと確認用パスワードが一致しません")
-            return
-        }
 
         setIsSaving(true)
 
