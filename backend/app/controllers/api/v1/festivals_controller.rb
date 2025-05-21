@@ -23,6 +23,29 @@ class Api::V1::FestivalsController < ApplicationController
     end
   end
 
+def show
+  festival = Festival
+    .left_joins(timetables: :user)
+    .select(
+      'festivals.*',
+      'COALESCE(users.name, \'不明\') AS created_by'
+    )
+    .find_by(id: params[:id])
+
+  return render json: { error: 'Festival not found' }, status: :not_found unless festival
+
+  render json: {
+    id: festival.id,
+    name: festival.name,
+    start_date: festival.start_date,
+    end_date: festival.end_date,
+    description: festival.description,
+    official_url: festival.official_url,
+    updated_at: festival.updated_at,
+    createdBy: festival.created_by
+  }
+end
+
   private
 
   def festival_params
