@@ -10,7 +10,7 @@ Rails.application.routes.draw do
 
       resource :session, only: [:create, :destroy]
 
-      resources :festivals, only: [:index, :create]
+      resources :festivals, only: [:index, :create, :show]
 
       get :csrf_token, to: "csrf#index"
       get :me, to: "auth#me"

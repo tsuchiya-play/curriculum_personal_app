@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useParams, useNavigate } from "react-router-dom"
-import { ArrowLeft, Calendar, Clock, Globe, FileText, User, RefreshCw } from "lucide-react"
+import { ArrowLeft, Calendar, Clock, Globe, User, RefreshCw } from "lucide-react"
 
 function FestivalDetailPage() {
     const { id } = useParams()
@@ -12,37 +12,27 @@ function FestivalDetailPage() {
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState(null)
 
-    // フェスデータの取得（モック）
     useEffect(() => {
-        const fetchFestivalDetail = async () => {
+        const fetchFestival = async () => {
             try {
-                // APIリクエストをシミュレート
-                await new Promise((resolve) => setTimeout(resolve, 800))
-
-                // モックデータ
-                const mockFestival = {
-                    id: Number.parseInt(id),
-                    name: "ROCK IN JAPAN FESTIVAL 2023",
-                    startDate: "2023-08-05",
-                    endDate: "2023-08-12",
-                    description:
-                        "日本最大級の夏フェス。国内アーティストを中心に多数出演。複数のステージで様々なジャンルの音楽が楽しめます。",
-                    officialUrl: "https://rockinon.com/rijfes/",
-                    createdBy: "音楽好きの太郎",
-                    updatedAt: "2023-06-15T09:30:00Z",
+                const response = await fetch(`http://localhost:3000/api/v1/festivals/${id}`)
+                if (!response.ok) {
+                    throw new Error("フェス詳細の取得に失敗しました")
                 }
 
-                setFestival(mockFestival)
+                const data = await response.json()
+                setFestival(data)
                 setIsLoading(false)
             } catch (err) {
-                console.error("フェスデータの取得に失敗しました", err)
-                setError("フェスデータの取得に失敗しました。再度お試しください。")
+                console.error("フェス詳細の取得に失敗しました", err)
+                setError("フェス詳細の取得に失敗しました。再度お試しください。")
                 setIsLoading(false)
             }
         }
 
-        fetchFestivalDetail()
+        fetchFestival()
     }, [id])
+
 
     // 日付のフォーマット
     const formatDate = (dateString) => {
@@ -143,7 +133,7 @@ function FestivalDetailPage() {
                 <h2 className="text-xl font-bold">{festival.name}</h2>
                 <div className="flex items-center gap-1 text-sm mt-1 text-purple-100">
                     <Calendar className="h-4 w-4" />
-                    <span>{formatDateRange(festival.startDate, festival.endDate)}</span>
+                    <span>{formatDateRange(festival.start_date, festival.end_date)}</span>
                 </div>
             </div>
 
@@ -153,8 +143,8 @@ function FestivalDetailPage() {
                     <button
                         onClick={() => setActiveTab("info")}
                         className={`flex-1 py-3 text-center font-medium text-sm ${activeTab === "info"
-                                ? "text-purple-700 border-b-2 border-purple-700"
-                                : "text-gray-500 hover:text-gray-700"
+                            ? "text-purple-700 border-b-2 border-purple-700"
+                            : "text-gray-500 hover:text-gray-700"
                             }`}
                     >
                         フェス情報
@@ -162,8 +152,8 @@ function FestivalDetailPage() {
                     <button
                         onClick={() => setActiveTab("timetable")}
                         className={`flex-1 py-3 text-center font-medium text-sm ${activeTab === "timetable"
-                                ? "text-purple-700 border-b-2 border-purple-700"
-                                : "text-gray-500 hover:text-gray-700"
+                            ? "text-purple-700 border-b-2 border-purple-700"
+                            : "text-gray-500 hover:text-gray-700"
                             }`}
                     >
                         タイムテーブル
@@ -184,7 +174,7 @@ function FestivalDetailPage() {
                                     <Calendar className="h-5 w-5 text-gray-400 mt-0.5" />
                                     <div>
                                         <p className="text-gray-800">
-                                            {formatDate(festival.startDate)} 〜 {formatDate(festival.endDate)}
+                                            {formatDate(festival.start_date)} 〜 {formatDate(festival.end_date)}
                                         </p>
                                     </div>
                                 </div>
@@ -232,7 +222,7 @@ function FestivalDetailPage() {
                                 <h3 className="text-sm font-medium text-gray-500 mb-1">最終更新日</h3>
                                 <div className="flex items-start gap-2">
                                     <Clock className="h-5 w-5 text-gray-400 mt-0.5" />
-                                    <p className="text-gray-800">{formatUpdatedAt(festival.updatedAt)}</p>
+                                    <p className="text-gray-800">{formatUpdatedAt(festival.updated_at)}</p>
                                 </div>
                             </div>
                         </div>
