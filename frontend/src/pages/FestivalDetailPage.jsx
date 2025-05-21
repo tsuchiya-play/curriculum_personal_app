@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { ArrowLeft, Calendar, Clock, Globe, User, RefreshCw } from "lucide-react"
+import FestivalTimetable from "../components/timetable/FestivalTimetable"
 
 function FestivalDetailPage() {
     const { id } = useParams()
@@ -228,20 +229,7 @@ function FestivalDetailPage() {
                         </div>
                     </div>
                 ) : (
-                    <div className="bg-white rounded-lg shadow-sm p-4">
-                        {/* タイムテーブル（仮） */}
-                        <div className="text-center py-8">
-                            <h3 className="text-lg font-semibold mb-4">タイムテーブル</h3>
-                            <p className="text-gray-600 mb-4">
-                                このフェスのタイムテーブルはまだ作成されていません。
-                                <br />
-                                タイムテーブルを作成して、お気に入りのアーティストのスケジュールを管理しましょう！
-                            </p>
-                            <button className="bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-lg shadow-sm">
-                                タイムテーブルを作成する
-                            </button>
-                        </div>
-                    </div>
+                    <FestivalTimetable festival={festival} festivalId={id} />
                 )}
             </div>
         </div>
