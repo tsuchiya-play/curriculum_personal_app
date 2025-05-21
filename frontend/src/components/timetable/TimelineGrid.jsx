@@ -2,8 +2,14 @@
 
 import { useRef, useEffect } from "react"
 import CurrentTimeIndicator from "./CurrentTimeIndicator"
+import ArtistSlot from "./ArtistSlot"
 
-function TimelineGrid({ timeSlots, stages, shouldShowCurrentTimeBar, getCurrentTimePosition }) {
+function TimelineGrid({ timeSlots,
+    stages,
+    artists,
+    getArtistPositionAndSize,
+    shouldShowCurrentTimeBar,
+    getCurrentTimePosition, }) {
     const scrollContainerRef = useRef(null)
 
     // 現在時刻のバーが表示される場合、スクロール位置を調整
@@ -63,7 +69,11 @@ function TimelineGrid({ timeSlots, stages, shouldShowCurrentTimeBar, getCurrentT
                             {/* 現在時刻のバー */}
                             {shouldShowCurrentTimeBar && <CurrentTimeIndicator position={getCurrentTimePosition()} />}
 
-                            {/* ここにアーティストの出演枠を表示（後で実装） */}
+                            {/* ここにアーティストの出演枠を表示 */}
+                            {artists &&
+                                artists.map((artist) => (
+                                    <ArtistSlot key={artist.id} artist={artist} getPositionAndSize={getArtistPositionAndSize} />
+                                ))}
                         </div>
                     </div>
                 </div>
