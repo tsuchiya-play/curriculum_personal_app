@@ -78,17 +78,14 @@ performances = stages.flat_map do |stage|
   end
 end
 
-# タイムテーブル（新たに date を含む）
-timetables = users.flat_map do |user|
-  2.times.map do
-    festival = festivals.sample
-    # 開催期間中の日付からランダムに選択
-    date = rand(festival.start_date..festival.end_date)
+timetables = []
 
-    Timetable.create!(
-      user: user,
+festivals.each do |festival|
+  (festival.start_date..festival.end_date).each do |date|
+    timetables << Timetable.create!(
+      user: users.sample,
       festival: festival,
-      title: "#{festival.name} My Plan",
+      title: "#{festival.name} #{date} Timetable",
       start_time: "10:00",
       end_time: "21:00",
       date: date,
