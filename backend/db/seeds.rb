@@ -1,34 +1,107 @@
-# ユーザー10名を作成
-users = 10.times.map do |i|
+require 'faker'
+
+# 初期化
+TimetableItem.delete_all
+Timetable.delete_all
+Performance.delete_all
+Stage.delete_all
+Artist.delete_all
+Genre.delete_all
+Festival.delete_all
+User.delete_all
+
+# ジャンル
+genres = [
+  "J-Rock", "Indie", "Pop Rock", "Alternative", "Visual Kei",
+  "Punk", "Folk Rock", "Electro Rock", "Metal", "Hip Hop"
+].map do |name|
+  Genre.create!(name: name)
+end
+
+# ユーザー
+users = 10.times.map do
   User.create!(
-    name: "ユーザー#{i + 1}",
-    email: "user#{i + 1}@example.com",
+    name: Faker::Name.name,
+    email: Faker::Internet.unique.email,
     password: "password",
-    password_confirmation: "password"
+    avatar_url: Faker::Avatar.image,
+    created_at: Time.now,
+    updated_at: Time.now
   )
 end
 
-# フェス10件のデータ
-festivals_data = [
-  { name: "ROCK IN JAPAN FESTIVAL 2025", start_date: "2025-08-01", end_date: "2025-08-03", description: "日本最大級のロックフェス", official_url: "https://rijf.jp" },
-  { name: "SUMMER SONIC 2025", start_date: "2025-08-15", end_date: "2025-08-16", description: "東京・大阪で開催される夏の都市型フェス", official_url: "https://www.summersonic.com" },
-  { name: "FUJI ROCK FESTIVAL 2025", start_date: "2025-07-25", end_date: "2025-07-27", description: "自然に囲まれた野外ロックフェス", official_url: "https://www.fujirockfestival.com" },
-  { name: "COUNTDOWN JAPAN 25/26", start_date: "2025-12-28", end_date: "2025-12-31", description: "年末のカウントダウンフェス", official_url: "https://countdownjapan.jp" },
-  { name: "RISING SUN ROCK FESTIVAL 2025", start_date: "2025-08-10", end_date: "2025-08-11", description: "北海道の大自然で行われるロックフェス", official_url: "https://rsr.wess.co.jp" },
-  { name: "METROCK 2025", start_date: "2025-05-11", end_date: "2025-05-12", description: "東京で開催される都市型ロックフェス", official_url: "https://metrock.jp" },
-  { name: "ROCKS TOKYO 2025", start_date: "2025-06-05", end_date: "2025-06-07", description: "東京発の新鋭ロックフェス", official_url: "https://rockstokyo.jp" },
-  { name: "NANBA ROCKS 2025", start_date: "2025-09-20", end_date: "2025-09-21", description: "大阪のロックフェス", official_url: "https://nanbarocks.jp" },
-  { name: "SAKURA FESTIVAL 2025", start_date: "2025-04-03", end_date: "2025-04-05", description: "春の桜を楽しむフェス", official_url: "https://sakurafes.jp" },
-  { name: "THE GREAT SATSUMANIAN HES 2025", start_date: "2025-05-20", end_date: "2025-05-22", description: "鹿児島で開催される人気フェス", official_url: "https://satsumanian.example.com" }
-]
+# フェス
+festivals = 10.times.map do
+  start_date = Faker::Date.forward(days: 10)
+  end_date = start_date + rand(1..2).days
 
-festivals_data.each_with_index do |festival_data, i|
-  festival = Festival.create!(festival_data)
-
-  # 各フェスにランダムなユーザーがタイムテーブル作成者として紐づく
-  Timetable.create!(
-    user: users.sample,
-    festival: festival,
-    title: "ユーザー#{i + 1}のタイムテーブル"
+  Festival.create!(
+    name: Faker::Music::RockBand.name + " Fes",
+    start_date: start_date,
+    end_date: end_date,
+    description: "日本の邦楽ロックを中心とした音楽フェスです。",
+    official_url: Faker::Internet.url,
+    created_at: Time.now,
+    updated_at: Time.now
   )
 end
+
+# アーティスト
+artists = 10.times.map do
+  Artist.create!(
+    name: Faker::JapaneseMedia::OnePiece.character,  # それっぽい日本名を代用
+    genre: genres.sample,
+    description: "邦楽ロックシーンで活躍する人気バンド。"
+  )
+end
+
+# ステージ
+stages = festivals.flat_map do |festival|
+  3.times.map do
+    Stage.create!(
+      name: "#{Faker::Color.color_name.capitalize} Stage",
+      festival: festival
+    )
+  end
+end
+
+# パフォーマンス
+performances = stages.flat_map do |stage|
+  3.times.map do
+    start_time = Faker::Time.forward(days: 5, period: :day)
+    Performance.create!(
+      artist: artists.sample,
+      stage: stage,
+      start_time: start_time,
+      end_time: start_time + 45.minutes
+    )
+  end
+end
+
+# タイムテーブル
+timetables = users.flat_map do |user|
+  2.times.map do
+    festival = festivals.sample
+    Timetable.create!(
+      user: user,
+      festival: festival,
+      title: "#{festival.name} My Plan",
+      start_time: "10:00",
+      end_time: "21:00",
+      created_at: Time.now
+    )
+  end
+end
+
+# タイムテーブルアイテム
+timetables.each do |timetable|
+  3.times do
+    TimetableItem.create!(
+      timetable: timetable,
+      performance: performances.sample,
+      memo: "楽しみ！"
+    )
+  end
+end
+
+puts "🌸 Seed completed with 邦楽ロックフェス！"

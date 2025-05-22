@@ -11,6 +11,8 @@ class Timetable < ApplicationRecord
 
   def start_time_must_be_before_end_time_if_same_day
     return if start_time.blank? || end_time.blank? || festival.blank?
-    errors.add(:start_time, 'は end_time より前の時間でなければなりません')
+    if :start_time < :end_time
+      errors.add(:start_time, 'は end_time より前の時間でなければなりません')
+    end
   end
 end
