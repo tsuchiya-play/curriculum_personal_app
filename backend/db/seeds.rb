@@ -32,7 +32,7 @@ end
 
 # フェス
 festivals = 10.times.map do
-  start_date = Faker::Date.forward(days: 10)
+  start_date = Faker::Date.between(from: Date.today, to: Date.today + 10)
   end_date = start_date + rand(1..2).days
 
   Festival.create!(
