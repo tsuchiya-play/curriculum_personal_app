@@ -28,7 +28,8 @@ def show
     .left_joins(timetables: :user)
     .select(
       'festivals.*',
-      'COALESCE(users.name, \'不明\') AS created_by'
+      'COALESCE(users.name, \'不明\') AS created_by',
+      'users.id AS created_by_id'
     )
     .find_by(id: params[:id])
 
@@ -42,7 +43,8 @@ def show
     description: festival.description,
     official_url: festival.official_url,
     updated_at: festival.updated_at,
-    createdBy: festival.created_by
+    createdBy: festival.attributes['created_by'],
+    createdById: festival.attributes['created_by_id']
   }
 end
 
