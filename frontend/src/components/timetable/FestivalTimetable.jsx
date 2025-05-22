@@ -233,7 +233,7 @@ function FestivalTimetable({ festival, festivalId }) {
     }
 
     // アーティストの位置とサイズを計算する関数
-    const getArtistPositionAndSize = (artist) => {
+    const getArtistPositionAndSize = (artist, stageWidth = 90) => {
         if (!timetableData) return { top: 0, height: 0, left: 0, width: 0 }
 
         const startTimeValue = getTimeValue(artist.start_time)
@@ -258,8 +258,8 @@ function FestivalTimetable({ festival, festivalId }) {
         if (stageIndex === -1) return { top: 0, height: 0, left: 0, width: 0 }
 
         // 左位置と幅
-        const left = stageIndex * 180
-        const width = 180
+        const left = stageIndex * stageWidth
+        const width = stageWidth
 
         return {
             top: topPixels,

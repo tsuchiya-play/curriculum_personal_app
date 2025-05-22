@@ -12,9 +12,9 @@ function ArtistSlot({ artist, getPositionAndSize }) {
             }}
         >
             <div className="h-1" style={{ backgroundColor: artist.color || "#8b5cf6" }} />
-            <div className="p-2">
-                <h4 className="font-medium text-sm truncate">{artist.name}</h4>
-                <p className="text-xs text-gray-500 truncate">
+            <div className="p-1">
+                <h4 className="font-medium text-xs truncate">{artist.name}</h4>
+                <p className="text-[10px] text-gray-500 truncate">
                     {artist.start_time} - {artist.end_time}
                 </p>
             </div>

@@ -28,22 +28,29 @@ function TimelineGrid({
         }
     }, [shouldShowCurrentTimeBar, getCurrentTimePosition])
 
+    // ステージの幅を縮小（スマホ向け）
+    const stageWidth = 90
+
     return (
         <div className="flex-1 relative overflow-hidden">
             {/* メインのスクロールコンテナ - 縦横両方スクロール可能 */}
-            <div ref={mainScrollContainerRef} className="h-full overflow-auto">
-                <div className="relative" style={{ minWidth: stages.length * 180 + 48 + "px" }}>
+            <div ref={mainScrollContainerRef} className="h-[500px] overflow-auto">
+                <div className="relative" style={{ minWidth: stages.length * stageWidth + 40 + "px" }}>
                     {/* ステージ名ヘッダー - 上部に固定 */}
-                    <div className="sticky top-0 left-0 z-20 flex bg-white border-b">
+                    <div className="sticky top-0 left-0 z-50 flex bg-white border-b">
                         {/* 左上の空白セル */}
-                        <div className="w-12 h-10 bg-white border-r z-30 sticky left-0"></div>
+                        <div className="w-10 h-10 bg-white border-r z-30 sticky left-0"></div>
 
                         {/* ステージ名 */}
                         <div className="flex">
                             {stages.map((stage) => (
                                 <div
                                     key={stage.id}
-                                    className="w-[180px] min-w-[180px] p-2 text-center font-medium text-sm border-r last:border-r-0 truncate"
+                                    className={`p-1 text-center font-medium text-xs border-r last:border-r-0 truncate`}
+                                    style={{
+                                        width: `${stageWidth}px`,
+                                        minWidth: `${stageWidth}px`,
+                                    }}
                                 >
                                     {stage.name}
                                 </div>
@@ -54,10 +61,10 @@ function TimelineGrid({
                     {/* コンテンツエリア */}
                     <div className="flex">
                         {/* 時間軸 - 左側に固定 */}
-                        <div className="sticky left-0 z-10 bg-white border-r">
+                        <div className="sticky left-0 z-30 bg-white border-r">
                             <div className="relative">
                                 {timeSlots.map((time, index) => (
-                                    <div key={index} className="h-16 w-12 relative">
+                                    <div key={index} className="h-16 w-10 relative">
                                         {/* 時間表示をグリッド線に合わせる */}
                                         <div className="absolute top-0 left-0 w-full flex justify-center text-xs text-gray-500 -translate-y-1/2">
                                             {time}
@@ -69,7 +76,7 @@ function TimelineGrid({
 
                         {/* ステージと時間枠 */}
                         <div>
-                            <div style={{ minWidth: stages.length * 180 + "px" }}>
+                            <div style={{ minWidth: stages.length * stageWidth + "px" }}>
                                 {/* 時間枠 */}
                                 <div className="relative">
                                     {/* 時間帯の区切り線 */}
@@ -81,7 +88,11 @@ function TimelineGrid({
                                                 style={{ top: index * 64 }}
                                             ></div>
                                             {stages.map((stage) => (
-                                                <div key={stage.id} className="w-[180px] border-r last:border-r-0"></div>
+                                                <div
+                                                    key={stage.id}
+                                                    className="border-r last:border-r-0"
+                                                    style={{ width: `${stageWidth}px` }}
+                                                ></div>
                                             ))}
                                         </div>
                                     ))}
@@ -93,7 +104,11 @@ function TimelineGrid({
                                     <div className="absolute top-0 left-0 right-0 bottom-0">
                                         {artists &&
                                             artists.map((artist) => (
-                                                <ArtistSlot key={artist.id} artist={artist} getPositionAndSize={getArtistPositionAndSize} />
+                                                <ArtistSlot
+                                                    key={artist.id}
+                                                    artist={artist}
+                                                    getPositionAndSize={(artist) => getArtistPositionAndSize(artist, stageWidth)}
+                                                />
                                             ))}
                                     </div>
                                 </div>
