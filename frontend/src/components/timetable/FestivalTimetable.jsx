@@ -221,35 +221,52 @@ function FestivalTimetable({ festival, festivalId }) {
         const now = new Date()
         const currentTimeValue = now.getHours() + now.getMinutes() / 60
         const startTimeValue = getTimeValue(timetableData.start_time)
-        const endTimeValue = getTimeValue(timetableData.end_time)
 
-        // タイムテーブルの表示範囲内での位置（%）
-        return ((currentTimeValue - startTimeValue) / (endTimeValue - startTimeValue)) * 100
+        // 時間スロットの高さ（ピクセル）
+        const timeSlotHeight = 64 // h-16 = 4rem = 64px
+
+        // タイムテーブルの開始時間からの経過時間（時間単位）
+        const hoursFromStart = currentTimeValue - startTimeValue
+
+        // 開始位置（ピクセル）
+        return hoursFromStart * timeSlotHeight
     }
 
     // アーティストの位置とサイズを計算する関数
-    const getArtistPositionAndSize = (artist) => {
+    const getArtistPositionAndSize = (artist, stageWidth = 90) => {
         if (!timetableData) return { top: 0, height: 0, left: 0, width: 0 }
 
         const startTimeValue = getTimeValue(artist.start_time)
         const endTimeValue = getTimeValue(artist.end_time)
         const timetableStartValue = getTimeValue(timetableData.start_time)
-        const timetableEndValue = getTimeValue(timetableData.end_time)
 
-        // タイムテーブルの表示範囲内での位置（%）
-        const top = ((startTimeValue - timetableStartValue) / (timetableEndValue - timetableStartValue)) * 100
-        // 高さ（%）
-        const height = ((endTimeValue - startTimeValue) / (timetableEndValue - timetableStartValue)) * 100
+        // 時間スロットの高さ（ピクセル）
+        const timeSlotHeight = 64 // h-16 = 4rem = 64px
+
+        // タイムテーブルの開始時間からの経過時間（時間単位）
+        const hoursFromStart = startTimeValue - timetableStartValue
+        // 出演時間（時間単位）
+        const durationHours = endTimeValue - startTimeValue
+
+        // 開始位置（ピクセル）
+        const topPixels = hoursFromStart * timeSlotHeight
+        // 高さ（ピクセル）
+        const heightPixels = durationHours * timeSlotHeight
 
         // ステージの位置を特定
         const stageIndex = timetableData.stages.findIndex((stage) => stage.id === artist.stage_id)
         if (stageIndex === -1) return { top: 0, height: 0, left: 0, width: 0 }
 
         // 左位置と幅
-        const left = `${stageIndex * 180}px`
-        const width = "180px"
+        const left = stageIndex * stageWidth
+        const width = stageWidth
 
-        return { top, height, left, width }
+        return {
+            top: topPixels,
+            height: heightPixels,
+            left,
+            width,
+        }
     }
 
     if (!festival || !selectedDate || isLoading) {
@@ -282,14 +299,16 @@ function FestivalTimetable({ festival, festivalId }) {
             </div>
 
             {/* タイムテーブル */}
-            <TimelineGrid
-                timeSlots={timeSlots}
-                stages={timetableData.stages}
-                artists={timetableData.artists}
-                getArtistPositionAndSize={getArtistPositionAndSize}
-                shouldShowCurrentTimeBar={shouldShowCurrentTimeBar()}
-                getCurrentTimePosition={getCurrentTimePosition}
-            />
+            <div className="flex-1 flex flex-col overflow-hidden">
+                <TimelineGrid
+                    timeSlots={timeSlots}
+                    stages={timetableData.stages}
+                    artists={timetableData.artists}
+                    getArtistPositionAndSize={getArtistPositionAndSize}
+                    shouldShowCurrentTimeBar={shouldShowCurrentTimeBar()}
+                    getCurrentTimePosition={getCurrentTimePosition}
+                />
+            </div>
 
             {/* 編集ボタン */}
             <div className="bg-white p-4 border-t flex justify-end">
