@@ -10,9 +10,13 @@ Rails.application.routes.draw do
 
       resource :session, only: [:create, :destroy]
 
-      resources :festivals, only: [:index, :create, :show]
+      resources :festivals, only: [:index, :create, :show] do
+        resource :timetable, only: [:edit, :update, :show, :destory]
+        resources :performances
+      end
+      resources :artists
 
-      get :csrf_token, to: "csrf#index"
+      get :csrf_token, to: "csrf#index" # 認証用ルート
       get :me, to: "auth#me"
     end
   end

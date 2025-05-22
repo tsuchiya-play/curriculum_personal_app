@@ -1,4 +1,6 @@
 require 'faker'
+require 'date'
+require 'time'
 
 # 初期化
 TimetableItem.delete_all
@@ -88,7 +90,7 @@ festivals.each do |festival|
       title: "#{festival.name} #{date} Timetable",
       start_time: "10:00",
       end_time: "21:00",
-      date: date,
+      date: date.strftime("%-m-%-d"),
       created_at: Time.now
     )
   end
