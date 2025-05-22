@@ -90,10 +90,12 @@ function TimelineGrid({
                                     {shouldShowCurrentTimeBar && <CurrentTimeIndicator position={getCurrentTimePosition()} />}
 
                                     {/* アーティスト出演枠 */}
-                                    {artists &&
-                                        artists.map((artist) => (
-                                            <ArtistSlot key={artist.id} artist={artist} getPositionAndSize={getArtistPositionAndSize} />
-                                        ))}
+                                    <div className="absolute top-0 left-0 right-0 bottom-0">
+                                        {artists &&
+                                            artists.map((artist) => (
+                                                <ArtistSlot key={artist.id} artist={artist} getPositionAndSize={getArtistPositionAndSize} />
+                                            ))}
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -5,10 +5,10 @@ function ArtistSlot({ artist, getPositionAndSize }) {
         <div
             className="absolute rounded-md overflow-hidden shadow-sm border border-gray-200 bg-white hover:shadow-md transition-shadow z-10"
             style={{
-                top: `${top}%`,
-                height: `${height}%`,
-                left: left,
-                width: width,
+                top: `${top}px`,
+                height: `${height}px`,
+                left: `${left}px`,
+                width: `${width}px`,
             }}
         >
             <div className="h-1" style={{ backgroundColor: artist.color || "#8b5cf6" }} />

@@ -258,12 +258,12 @@ function FestivalTimetable({ festival, festivalId }) {
         if (stageIndex === -1) return { top: 0, height: 0, left: 0, width: 0 }
 
         // 左位置と幅
-        const left = `${stageIndex * 180}px`
-        const width = "180px"
+        const left = stageIndex * 180
+        const width = 180
 
         return {
-            top: `${topPixels}px`,
-            height: `${heightPixels}px`,
+            top: topPixels,
+            height: heightPixels,
             left,
             width,
         }
