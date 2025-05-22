@@ -49,7 +49,7 @@ end
 # アーティスト
 artists = 10.times.map do
   Artist.create!(
-    name: Faker::JapaneseMedia::OnePiece.character,  # それっぽい日本名を代用
+    name: Faker::JapaneseMedia::OnePiece.character,
     genre: genres.sample,
     description: "邦楽ロックシーンで活躍する人気バンド。"
   )
@@ -78,16 +78,20 @@ performances = stages.flat_map do |stage|
   end
 end
 
-# タイムテーブル
+# タイムテーブル（新たに date を含む）
 timetables = users.flat_map do |user|
   2.times.map do
     festival = festivals.sample
+    # 開催期間中の日付からランダムに選択
+    date = rand(festival.start_date..festival.end_date)
+
     Timetable.create!(
       user: user,
       festival: festival,
       title: "#{festival.name} My Plan",
       start_time: "10:00",
       end_time: "21:00",
+      date: date,
       created_at: Time.now
     )
   end
@@ -104,4 +108,4 @@ timetables.each do |timetable|
   end
 end
 
-puts "🌸 Seed completed with 邦楽ロックフェス！"
+puts "🌸 Seed completed with 邦楽ロックフェス！（date 対応済み）"
