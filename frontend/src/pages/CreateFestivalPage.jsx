@@ -34,8 +34,8 @@ function CreateFestivalPage() {
         setIsSubmitting(true)
 
         try {
-            // 実際の実装では以下のようなAPIリクエストを行う
             const response = await fetch("http://localhost:3000/api/v1/festivals", {
+                credentials: "include",
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
