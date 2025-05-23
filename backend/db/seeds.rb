@@ -1,4 +1,6 @@
 require 'faker'
+require 'date'
+require 'time'
 
 # 初期化
 TimetableItem.delete_all
@@ -49,7 +51,7 @@ end
 # アーティスト
 artists = 10.times.map do
   Artist.create!(
-    name: Faker::JapaneseMedia::OnePiece.character,  # それっぽい日本名を代用
+    name: Faker::JapaneseMedia::OnePiece.character,
     genre: genres.sample,
     description: "邦楽ロックシーンで活躍する人気バンド。"
   )
@@ -78,16 +80,17 @@ performances = stages.flat_map do |stage|
   end
 end
 
-# タイムテーブル
-timetables = users.flat_map do |user|
-  2.times.map do
-    festival = festivals.sample
-    Timetable.create!(
-      user: user,
+timetables = []
+
+festivals.each do |festival|
+  (festival.start_date..festival.end_date).each do |date|
+    timetables << Timetable.create!(
+      user: users.sample,
       festival: festival,
-      title: "#{festival.name} My Plan",
+      title: "#{festival.name} #{date} Timetable",
       start_time: "10:00",
       end_time: "21:00",
+      date: date.strftime("%F"),
       created_at: Time.now
     )
   end
@@ -104,4 +107,4 @@ timetables.each do |timetable|
   end
 end
 
-puts "🌸 Seed completed with 邦楽ロックフェス！"
+puts "🌸 Seed completed with 邦楽ロックフェス！（date 対応済み）"

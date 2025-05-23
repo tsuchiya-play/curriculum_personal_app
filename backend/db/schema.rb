@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_05_21_085047) do
+ActiveRecord::Schema[7.1].define(version: 2025_05_22_085459) do
   create_table "artists", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.text "description"
@@ -74,6 +74,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_21_085047) do
     t.datetime "updated_at", null: false
     t.datetime "start_time"
     t.datetime "end_time"
+    t.string "date"
     t.index ["festival_id"], name: "index_timetables_on_festival_id"
     t.index ["user_id"], name: "index_timetables_on_user_id"
   end
