@@ -90,7 +90,7 @@ festivals.each do |festival|
       title: "#{festival.name} #{date} Timetable",
       start_time: "10:00",
       end_time: "21:00",
-      date: date.strftime("%-m-%-d"),
+      date: date.strftime("%F"),
       created_at: Time.now
     )
   end
