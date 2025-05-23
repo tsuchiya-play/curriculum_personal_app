@@ -32,12 +32,21 @@ users = 10.times.map do
   )
 end
 
-# フェス
-festivals = 10.times.map do
+# アーティスト
+artists = 20.times.map do
+  Artist.create!(
+    name: Faker::JapaneseMedia::OnePiece.character,
+    genre: genres.sample,
+    description: "邦楽ロックシーンで活躍する人気バンド。"
+  )
+end
+
+# フェス + ステージ + タイムテーブル + パフォーマンス
+festivals = 5.times.map do
   start_date = Faker::Date.between(from: Date.today, to: Date.today + 10)
   end_date = start_date + rand(1..2).days
 
-  Festival.create!(
+  festival = Festival.create!(
     name: Faker::Music::RockBand.name + " Fes",
     start_date: start_date,
     end_date: end_date,
@@ -46,65 +55,62 @@ festivals = 10.times.map do
     created_at: Time.now,
     updated_at: Time.now
   )
-end
 
-# アーティスト
-artists = 10.times.map do
-  Artist.create!(
-    name: Faker::JapaneseMedia::OnePiece.character,
-    genre: genres.sample,
-    description: "邦楽ロックシーンで活躍する人気バンド。"
-  )
-end
-
-# ステージ
-stages = festivals.flat_map do |festival|
-  3.times.map do
+  # ステージ（1〜5個）
+  stages = rand(1..5).times.map do
     Stage.create!(
       name: "#{Faker::Color.color_name.capitalize} Stage",
       festival: festival
     )
   end
-end
 
-# パフォーマンス
-performances = stages.flat_map do |stage|
-  3.times.map do
-    start_time = Faker::Time.forward(days: 5, period: :day)
-    Performance.create!(
-      artist: artists.sample,
-      stage: stage,
-      start_time: start_time,
-      end_time: start_time + 45.minutes
+  # 日付ごとのタイムテーブル + パフォーマンス
+  (start_date..end_date).each do |date|
+
+    random_start_time = Faker::Time.between(
+      from: Time.zone.local(date.year, date.month, date.day, 0, 0),
+      to:   Time.zone.local(date.year, date.month, date.day, 10, 0)
     )
-  end
-end
 
-timetables = []
-
-festivals.each do |festival|
-  (festival.start_date..festival.end_date).each do |date|
-    timetables << Timetable.create!(
+    random_end_time = Faker::Time.between(
+      from: Time.zone.local(date.year, date.month, date.day, 21, 0),
+      to:   Time.zone.local(date.year, date.month, date.day, 23, 59)
+    )
+    timetable = Timetable.create!(
       user: users.sample,
       festival: festival,
       title: "#{festival.name} #{date} Timetable",
-      start_time: "10:00",
-      end_time: "21:00",
+      start_time: random_start_time,
+      end_time: random_end_time,
       date: date.strftime("%F"),
       created_at: Time.now
     )
+
+    # パフォーマンス（各ステージに1〜3件）
+    stages.each do |stage|
+      rand(1..3).times do
+        range_start = timetable.start_time
+        range_end = timetable.end_time - 45.minutes
+
+        start_time = Faker::Time.between(from: range_start, to: range_end)
+        Performance.create!(
+          artist: artists.sample,
+          stage: stage,
+          start_time: start_time,
+          end_time: start_time + 45.minutes
+        )
+      end
+    end
+
+    # タイムテーブルアイテム
+    3.times do
+      TimetableItem.create!(
+        timetable: timetable,
+        performance: Performance.order("RAND()").first,
+        memo: "楽しみ！"
+      )
+    end
   end
 end
 
-# タイムテーブルアイテム
-timetables.each do |timetable|
-  3.times do
-    TimetableItem.create!(
-      timetable: timetable,
-      performance: performances.sample,
-      memo: "楽しみ！"
-    )
-  end
-end
-
-puts "🌸 Seed completed with 邦楽ロックフェス！（date 対応済み）"
+puts "🌸 Seed completed with 邦楽ロックフェス！（24時間タイムテーブル対応済み）"
