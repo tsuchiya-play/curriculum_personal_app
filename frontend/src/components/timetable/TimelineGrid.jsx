@@ -31,7 +31,7 @@ function TimelineGrid({
     }, [shouldShowCurrentTimeBar, getCurrentTimePosition])
 
     // ステージの幅を縮小（スマホ向け）
-    const stageWidth = 120
+    const stageWidth = 90
 
     // 時間を数値に変換（例: "14:30" → 14.5）
     const getTimeValue = (timeStr) => {
@@ -79,7 +79,7 @@ function TimelineGrid({
     return (
         <div className="flex-1 relative overflow-hidden">
             {/* メインのスクロールコンテナ - 縦横両方スクロール可能 */}
-            <div ref={mainScrollContainerRef} className="h-full overflow-auto">
+            <div ref={mainScrollContainerRef} className="h-[600px] overflow-auto">
                 <div className="relative" style={{ minWidth: stages.length * stageWidth + 40 + "px" }}>
                     {/* ステージ名ヘッダー - 上部に固定 */}
                     <div className="sticky top-0 left-0 z-20 flex bg-white border-b">
@@ -103,7 +103,7 @@ function TimelineGrid({
                     {/* コンテンツエリア */}
                     <div className="flex">
                         {/* 時間軸 - 左側に固定 */}
-                        <div className="sticky left-0 z-10 bg-white border-r">
+                        <div className="sticky left-0 z-30 bg-white border-r">
                             <div className="relative">
                                 {timeSlots.map((time, index) => {
                                     const height = getTimeSlotHeight(index)
