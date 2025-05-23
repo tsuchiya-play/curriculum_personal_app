@@ -15,9 +15,28 @@ class Api::V1::FestivalsController < ApplicationController
   # POST /api/v1/festivals
   def create
     festival = Festival.new(festival_params)
+    user = @current_user
+    puts user
 
     if festival.save
-      render json: { festival: festival }, status: :created
+      # 開催日の範囲を取得
+      (festival.start_date..festival.end_date).each do |date|
+        # timetable レコードを作成
+        Timetable.create!(
+          user_id: user.id,
+          festival_id: festival.id,
+          title: 'MyTimetable',
+          start_time: Time.zone.parse('10:00'),
+          end_time: Time.zone.parse('21:00'),
+          date: date
+        )
+      end
+      # stage レコードを作成
+      Stage.create!(
+        festival_id: festival.id,
+        name: 'Stage'
+      )
+    render json: { festival: festival }, status: :created
     else
       render json: { error: festival.errors.full_messages }, status: :unprocessable_entity
     end

@@ -4,7 +4,7 @@ class Api::V1::TimetablesController < ApplicationController
     festival = Festival.includes(stages: :performances).find(params[:festival_id])
     date = params[:date]
 
-    timetable = festival.timetables.find_by(date: date)
+    timetable = festival.timetables.find_by(date: date) # 設計ミス timetable.dataが擬似的にidみたいになっている
     stages = festival.stages
     performances = Performance
       .includes(:artist, :stage)
