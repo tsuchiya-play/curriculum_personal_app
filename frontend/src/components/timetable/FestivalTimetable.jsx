@@ -7,7 +7,7 @@ import DateSelector from "./DateSelector"
 import TimelineGrid from "./TimelineGrid"
 import { formatDate } from "../../utils/formatDate"
 
-function FestivalTimetable({ festival, festivalId}) {
+function FestivalTimetable({ festival, festivalId }) {
     const navigate = useNavigate()
     const [selectedDate, setSelectedDate] = useState(null)
     const [timetableData, setTimetableData] = useState(null)
@@ -84,19 +84,35 @@ function FestivalTimetable({ festival, festivalId}) {
     // 時間スロットを生成
     const generateTimeSlots = () => {
         if (!timetableData) return []
+
         const startTimeValue = getTimeValue(timetableData.timetables.start_time)
         const endTimeValue = getTimeValue(timetableData.timetables.end_time)
 
-        // 開始時間の時間部分（切り捨て）
+        // 開始時間の時間部分（切り捨て）から終了時間の時間部分（切り上げ）まで
         const startHour = Math.floor(startTimeValue)
-        // 終了時間の時間部分（切り上げ）
         const endHour = Math.ceil(endTimeValue)
 
         // 1時間ごとの時間スロットを生成
-        return Array.from({ length: endHour - startHour + 1 }, (_, i) => {
-            const hour = startHour + i
-            return `${hour}:00`
-        })
+        const slots = []
+
+        for (let hour = startHour; hour <= endHour; hour++) {
+            slots.push(`${hour}:00`)
+        }
+
+        return slots
+    }
+
+    const getTimetableHeight = () => {
+        if (!timetableData) return 0
+
+        const startTimeValue = getTimeValue(timetableData.timetables.start_time)
+        const endTimeValue = getTimeValue(timetableData.timetables.end_time)
+        const totalHours = endTimeValue - startTimeValue
+
+        // 時間スロットの高さ（ピクセル）
+        const timeSlotHeight = 64 // h-16 = 4rem = 64px
+
+        return totalHours * timeSlotHeight
     }
 
     // 現在時刻のバーを表示するかどうか
@@ -213,6 +229,8 @@ function FestivalTimetable({ festival, festivalId}) {
                     getArtistPositionAndSize={getArtistPositionAndSize}
                     shouldShowCurrentTimeBar={shouldShowCurrentTimeBar()}
                     getCurrentTimePosition={getCurrentTimePosition}
+                    timetableHeight={getTimetableHeight()}
+                    timetableData={timetableData}
                 />
             </div>
 
